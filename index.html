@@ -1,11 +1,221 @@
 <html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+
+    <style>
+      .card {
+        margin-bottom: 1rem;
+      }
+      #response {
+        /* hide on page-load */
+        display: none;
+      }
+    </style>
+  </head>
   <body>
-    <a href="https://apps.irs.gov/app/withholdingcalculator/" target="_blank">
-      Official IRS Withholding Calcuator
-    </a>
-    <br>
-    <a href="https://www.irs.gov/publications/p505#idm139907894104912" target="_blank">
-      Required Annual Payment
-    </a>
+    <div class="container">
+      <h1>IRS Federal Income Tax Calculator</h1>
+      <p>
+        Are you paying too much in taxes? Do you lament the idea of loaning
+        Uncle Sam money, interest-free, as you get a refund year after year?
+        Dissatisfied with other calculators, I found a strategy for maximizing
+        take-home pay, based on this rule in official IRS publications:
+      </p>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">
+            <a href="https://www.irs.gov/publications/p505#idm139907894104912"
+               target="_blank">
+              Required Annual Payment
+            </a>
+          </h5>
+          <p class="card-text">
+            <b>General rule.</b> The total amount you must pay is the smaller of:
+          </p>
+          <ul>
+            <li>90% of your total expected tax for 2018, or</li>
+            <li>
+              100% of the total tax shown on your 2017 return. Your 2017 tax
+              return must cover all 12 months.
+            </li>
+          </ul>
+        </div>
+      </div>
+      <p>
+        This calculator simply divides the amount of your last year tax
+        liability, minus year-to-date withholdings, by the number of your
+        remaining pay periods. This calculator works best if you anticipate your
+        tax liability will increase this year compared to last year. If your
+        income is less this year, then standard withholding allowances may get
+        you more take-home pay (and you would be better off using the official
+        calculator, linked below).
+      </p>
+      <p>
+        <span class="badge badge-danger">Warning</span> there are penalties and
+        legal repercussions for underpayment of taxes. This calculator comes
+        with no guarantees. Use at your own risk. You should start with the
+        <a href="https://apps.irs.gov/app/withholdingcalculator/" target="_blank">
+        Official IRS Withholding Calcuator</a>
+      </p>
+
+      <hr />
+
+      <div class="row">
+        <div class="col">
+
+          <label for="liability">Your total federal tax liability for last year:</label>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">$</span>
+            </div>
+            <input type="text" class="form-control" id="liability">
+          </div>
+
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <div class="input-group-text">
+                <input type="checkbox" id="over150">
+              </div>
+            </div>
+            <input type="text" readonly class="form-control"
+                                        value="My AGI was over $150,000"></input>
+            <div class="input-group-append">
+              <span class="input-group-text">
+                <a href="https://www.irs.gov/publications/p505#en_US_2018_publink1000194628"
+                   target="_blank">
+                  Higher income taxpayers
+                </a>
+              </span>
+            </div>
+          </div>
+
+          <label for="ytd">Total year-to-date withholdings:</label>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">$</span>
+            </div>
+            <input type="text" class="form-control" id="ytd">
+          </div>
+
+          <label for="paycount">Number of paychecks left this year:</label>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">$</span>
+            </div>
+            <input type="text" class="form-control" id="paycount">
+          </div>
+
+          <label for="last">Withholdings on last paycheck:</label>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">$</span>
+            </div>
+            <input type="text" class="form-control" id="last">
+          </div>
+
+          <button class="btn" name="button-calc">Calculate</button>
+        </div>
+
+        <div class="col" id="prompt">
+          <p>
+            Enter as much as you can and click <button class="btn" name="button-calc">
+            Calculate</button> to see a strategy for allowances and withholding.
+          </p>
+        </div>
+
+        <div class="col" id="response">
+          <div id="response-html">
+          </div>
+          <button class="btn" name="button-calc">Re-Calculate</button>
+          <button class="btn" name="button-clear">Clear</button>
+        </div>
+
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT"
+            crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+            crossorigin="anonymous">
+    </script>
+    <script>
+      function showResponse(response) {
+        $( "#response-html" ).html(response);
+        $( "#prompt" ).css( "display", "none" );
+        $( "#response" ).css( "display", "block" );
+        $( "html, body" ).animate({ scrollTop: $(document).height() }, "slow");
+      }
+      function calculate() {
+        var liability = parseFloat($( "#liability" ).val());
+        var over150 = $( "#over150:checked" ).val();
+        var paycount = parseInt($( "#paycount" ).val());
+        var ytd = parseFloat($( "#ytd" ).val());
+        var last = parseFloat($( "#last" ).val());
+
+        if (isNaN(liability)) {
+          showResponse("<p>Please input a number for your federal tax liability last year.</p>");
+          return;
+        }
+
+        if (over150) {
+          liability *= 1.1;
+        }
+
+        response = "<p>Your target withholding for this year is $" + liability.toFixed(2) + '.';
+
+        if (isNaN(paycount) || isNaN(ytd) || isNaN(last)) {
+          response += " Assuming 26 pay periods for the year, you should divide"
+                    + " this into equal amounts of <b>$" + (liability / 26).toFixed(2)
+                    + "</b> for your per-paycheck withholding</p>"
+                    + "<p>Enter YTD, # paychecks and withholdings on last paycheck"
+                    + " to see a strategy for optimizing your withholdings</p>";
+          showResponse(response);
+          return;
+        }
+
+        var payamount = (liability - ytd) / paycount;
+        response += " With " + paycount + " paychecks left in the year, you"
+                  + " should divide remaining $" + (liability - ytd).toFixed(2)
+                  + " in to equal amounts of <b>$" + payamount.toFixed(2) + "</b></p>";
+
+        response += '<p><b>The Strategy:</b><br>';
+        // At mosti, a $26 difference for the year.
+        if (Math.abs(payamount-last) < 1) {
+          response += "You're right on track! No need to make any adjustments "
+          response += "to your withholdings";
+        }
+        else if (payamount < last) {
+          response += "You are paying too much in taxes and will pay more than"
+                    + " the minimum required. Increase your allowances and then"
+                    + " come back after your next paycheck to fine-tune your"
+                    + " withholdings";
+        }
+        else {
+          payamount -= last;
+          response += "Increase your withholding amount by <b>$"
+            + payamount.toFixed(2) + '</b> per paycheck using the "Additional'
+                    + ' Withholding Amount" on your W-4';
+        }
+        response += '</p>';
+
+        showResponse(response);
+      }
+
+      $( "button[name=button-calc]" ).click(calculate);
+
+      $( "button[name=button-clear]" ).click(function () {
+        $( "#response" ).css( "display", "none" );
+        $( "#prompt" ).css( "display", "block" );
+      });
+    </script>
   </body>
 </html>
