@@ -30,7 +30,7 @@
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">
-            <a href="https://www.irs.gov/publications/p505#idm139907894104912"
+            <a href="https://www.irs.gov/publications/p505#en_US_2019_publink1000194625"
                target="_blank">
               Required Annual Payment
             </a>
@@ -38,13 +38,13 @@
           <p class="card-text">
             <b>General rule.</b> The total amount you must pay is the smaller of:
           </p>
-          <ul>
-            <li>90% of your total expected tax for 2018, or</li>
+          <ol>
+            <li>90% of your total expected tax for 2019, or</li>
             <li>
-              100% of the total tax shown on your 2017 return. Your 2017 tax
+              100% of the total tax shown on your 2018 return. Your 2018 tax
               return must cover all 12 months.
             </li>
-          </ul>
+          </ol>
         </div>
       </div>
       <p>
@@ -87,7 +87,7 @@
                                         value="My AGI was over $150,000"></input>
             <div class="input-group-append">
               <span class="input-group-text">
-                <a href="https://www.irs.gov/publications/p505#en_US_2018_publink1000194628"
+                <a href="https://www.irs.gov/publications/p505#en_US_2019_publink1000194628"
                    target="_blank">
                   Higher income taxpayers
                 </a>
@@ -182,27 +182,26 @@
           return;
         }
 
-        var payamount = (liability - ytd) / paycount;
+        var withholding = (liability - ytd) / paycount;
+        var difference = Math.abs(withholding-last)
         response += " With " + paycount + " paychecks left in the year, you"
                   + " should divide remaining $" + (liability - ytd).toFixed(2)
-                  + " in to equal amounts of <b>$" + payamount.toFixed(2) + "</b></p>";
+                  + " in to equal amounts of <b>$" + withholding.toFixed(2) + "</b></p>";
 
         response += '<p><b>The Strategy:</b><br>';
-        // At mosti, a $26 difference for the year.
-        if (Math.abs(payamount-last) < 1) {
+        // At most, a ~50 difference for the year.
+        if (difference < 2) {
           response += "You're right on track! No need to make any adjustments "
           response += "to your withholdings";
         }
-        else if (payamount < last) {
-          response += "You are paying too much in taxes and will pay more than"
-                    + " the minimum required. Increase your allowances and then"
-                    + " come back after your next paycheck to fine-tune your"
-                    + " withholdings";
+        else if (withholding < last) {
+          response += "<b>Reduce</b> your withholding amount by <b>$"
+            + difference.toFixed(2) + '</b> per paycheck using the "Additional'
+                    + ' Withholding Amount" on your W-4';
         }
         else {
-          payamount -= last;
-          response += "Increase your withholding amount by <b>$"
-            + payamount.toFixed(2) + '</b> per paycheck using the "Additional'
+          response += "<b>Increase</b> your withholding amount by <b>$"
+            + difference.toFixed(2) + '</b> per paycheck using the "Additional'
                     + ' Withholding Amount" on your W-4';
         }
         response += '</p>';
